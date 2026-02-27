@@ -3,6 +3,7 @@ package com.ecommerce.productservice.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.web.SecurityFilterChain;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -30,54 +32,64 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints - no authentication required
-                        .requestMatchers(
-                                "/api/products/**",
-                                "/api/categories/**",
-                                "/api/brands/**",
-                                "/actuator/health",
-                                "/actuator/info"
-                        ).permitAll()
-                        // All other endpoints require authentication
+                        // Public endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+
+                        // Admin endpoints - check BOTH realm role AND client role
+                        .requestMatchers(HttpMethod.POST, "/api/products/**")
+                        .hasAnyRole("ADMIN", "PRODUCT_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**")
+                        .hasAnyRole("ADMIN", "PRODUCT_ADMIN", "PRODUCT_MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**")
+                        .hasAnyRole("ADMIN", "PRODUCT_ADMIN")
+
+                        // Stock management
+                        .requestMatchers(HttpMethod.PUT, "/api/products/*/stock")
+                        .hasAnyRole("ADMIN", "INVENTORY_MANAGER")
+
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                )
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
-
         return http.build();
     }
 
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-        converter.setJwtGrantedAuthoritiesConverter(new KeycloakRoleConverter());
+
+        converter.setJwtGrantedAuthoritiesConverter(jwt -> {
+            Collection<GrantedAuthority> authorities = new HashSet<>();
+
+            // 1. Extract realm roles
+            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
+            if (realmAccess != null && realmAccess.get("roles") != null) {
+                List<String> realmRoles = (List<String>) realmAccess.get("roles");
+                realmRoles.forEach(role ->
+                        authorities.add(new SimpleGrantedAuthority("ROLE_" + role))
+                );
+            }
+
+            // 2. Extract client roles for THIS service
+            Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+            if (resourceAccess != null) {
+                // Get roles for product-service
+                Map<String, Object> productService =
+                        (Map<String, Object>) resourceAccess.get("product-service");
+
+                if (productService != null && productService.get("roles") != null) {
+                    List<String> clientRoles = (List<String>) productService.get("roles");
+                    clientRoles.forEach(role ->
+                            authorities.add(new SimpleGrantedAuthority("ROLE_" + role))
+                    );
+                }
+            }
+
+            return authorities;
+        });
+
         return converter;
     }
-
-    static class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
-        @Override
-        public Collection<GrantedAuthority> convert(Jwt jwt) {
-            Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-
-            if (realmAccess == null || realmAccess.isEmpty()) {
-                return List.of();
-            }
-
-            @SuppressWarnings("unchecked")
-            List<String> roles = (List<String>) realmAccess.get("roles");
-
-            if (roles == null || roles.isEmpty()) {
-                return List.of();
-            }
-
-            return roles.stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-                    .collect(Collectors.toList());
-        }
-    }
 }
-
