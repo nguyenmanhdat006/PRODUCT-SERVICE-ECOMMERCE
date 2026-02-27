@@ -184,39 +184,6 @@ product-service/
 - **Utilities:** Lombok
 - **Build:** Maven
 
-## 🚀 Quick Start Commands
-
-```bash
-# Make script executable (first time only)
-chmod +x manage.sh
-
-# Full setup (start infrastructure, build, ready to run)
-./manage.sh full
-
-# Start infrastructure only
-./manage.sh start
-
-# Build application
-./manage.sh build
-
-# Run application
-./manage.sh run
-
-# Stop infrastructure
-./manage.sh stop
-
-# View status
-./manage.sh status
-
-# View logs
-./manage.sh logs
-
-# Test endpoints
-./manage.sh test
-
-# Clean everything (including data)
-./manage.sh clean
-```
 
 ## 📊 Database Schema
 
@@ -294,11 +261,4 @@ The Product Catalog Service is **fully implemented** and **production-ready** wi
 - ✅ Sample data
 - ✅ Documentation
 - ✅ Management scripts
-
-**Ready to use!** Follow the SETUP-GUIDE.md to get started.
-
----
-
-**Implementation Date:** February 22, 2026  
-**Version:** 1.0.0
 
