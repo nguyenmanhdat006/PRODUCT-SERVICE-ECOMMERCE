@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-27T22:16:41+0700",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.45.0.v20260224-0835, environment: Java 21.0.10 (Eclipse Adoptium)"
+    date = "2026-02-28T17:51:43+0700",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (JetBrains s.r.o.)"
 )
 @Component
 public class ProductDocumentMapperImpl implements ProductDocumentMapper {
@@ -23,16 +23,16 @@ public class ProductDocumentMapperImpl implements ProductDocumentMapper {
 
         ProductDocument.ProductDocumentBuilder productDocument = ProductDocument.builder();
 
-        productDocument.createdAt( product.getCreatedAt() );
-        productDocument.description( product.getDescription() );
-        productDocument.featured( product.getFeatured() );
         productDocument.name( product.getName() );
+        productDocument.slug( product.getSlug() );
+        productDocument.description( product.getDescription() );
+        productDocument.shortDescription( product.getShortDescription() );
         productDocument.price( product.getPrice() );
         productDocument.published( product.getPublished() );
-        productDocument.shortDescription( product.getShortDescription() );
-        productDocument.sku( product.getSku() );
-        productDocument.slug( product.getSlug() );
+        productDocument.featured( product.getFeatured() );
         productDocument.stockQuantity( product.getStockQuantity() );
+        productDocument.sku( product.getSku() );
+        productDocument.createdAt( product.getCreatedAt() );
         productDocument.updatedAt( product.getUpdatedAt() );
 
         productDocument.id( product.getId().toString() );
