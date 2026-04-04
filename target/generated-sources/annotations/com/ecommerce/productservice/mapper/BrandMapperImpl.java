@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-02-28T17:51:43+0700",
-    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (JetBrains s.r.o.)"
+    date = "2026-04-04T09:25:51+0700",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.18 (Microsoft)"
 )
 @Component
 public class BrandMapperImpl implements BrandMapper {

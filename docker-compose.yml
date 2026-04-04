@@ -2,24 +2,24 @@ version: '3.8'
 
 services:
   # PostgreSQL Database
-  postgres-product:
-    image: postgres:16-alpine
-    container_name: postgres-product
-    environment:
-      POSTGRES_DB: productdb
-      POSTGRES_USER: product_user
-      POSTGRES_PASSWORD: product_pass
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_product_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U product_user -d productdb"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - product-network
+#  postgres-product:
+#    image: postgres:16-alpine
+#    container_name: postgres-product
+#    environment:
+#      POSTGRES_DB: productdb
+#      POSTGRES_USER: product_user
+#      POSTGRES_PASSWORD: product_pass
+#    ports:
+#      - "5433:5432"
+#    volumes:
+#      - postgres_product_data:/var/lib/postgresql/data
+#    healthcheck:
+#      test: ["CMD-SHELL", "pg_isready -U product_user -d productdb"]
+#      interval: 10s
+#      timeout: 5s
+#      retries: 5
+#    networks:
+#      - product-network
 
   # Elasticsearch
   elasticsearch:
@@ -94,7 +94,7 @@ services:
       - product-network
 
 volumes:
-  postgres_product_data:
+#  postgres_product_data:
   elasticsearch_data:
   minio_data:
 

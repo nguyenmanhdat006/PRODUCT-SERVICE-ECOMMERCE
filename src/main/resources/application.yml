@@ -10,8 +10,8 @@ spring:
   # PostgreSQL Database Configuration
   datasource:
     url: jdbc:postgresql://localhost:5433/productdb
-    username: product_user
-    password: product_pass
+    username: admin
+    password: password
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -55,9 +55,9 @@ spring:
 #          jwk-set-uri: http://localhost:8180/realms/ecommerce/protocol/openid-connect/certs
 
   keycloak:
-    resource: product-service
+    resource: ecommerce-backend
     credentials:
-      secret: HBnDXGpgtbJY8hUMT8tQ3t7tEeNESpJR
+      secret: fhIrOyzOYvu9dCAqQKWFXQrQG37jzXOO
 
   # File Upload Configuration
   servlet:
@@ -83,6 +83,14 @@ app:
   search:
     default-page-size: 20
     max-page-size: 100
+
+# OpenAPI/Swagger configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
 
 # Actuator Configuration
 management:
