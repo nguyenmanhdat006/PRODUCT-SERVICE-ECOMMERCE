@@ -6,10 +6,12 @@ import com.ecommerce.productservice.dto.response.ApiResponse;
 import com.ecommerce.productservice.dto.response.PageResponse;
 import com.ecommerce.productservice.service.ProductSearchService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@ConditionalOnProperty(prefix = "app.search", name = "enabled", havingValue = "true")
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
 public class ProductSearchController {

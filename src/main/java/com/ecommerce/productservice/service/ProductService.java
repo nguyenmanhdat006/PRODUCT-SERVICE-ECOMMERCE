@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -36,7 +37,7 @@ public class ProductService {
     private final BrandRepository brandRepository;
     private final ProductImageRepository productImageRepository;
     private final ProductVariantRepository productVariantRepository;
-    private final ProductSearchRepository productSearchRepository;
+    private final Optional<ProductSearchRepository> productSearchRepository;
 
     private final ProductMapper productMapper;
     private final ProductImageMapper productImageMapper;
@@ -219,25 +220,40 @@ public class ProductService {
         productRepository.delete(product);
 
         // Remove from Elasticsearch
-        productSearchRepository.deleteById(id.toString());
+        productSearchRepository.ifPresent(repo -> {
+            try {
+                repo.deleteById(id.toString());
+            } catch (Exception e) {
+                log.error("Failed to remove product from Elasticsearch: {}", id, e);
+            }
+        });
 
         log.info("Product deleted successfully: {}", id);
     }
 
     public void syncAllProductsToElasticsearch() {
+        if (productSearchRepository.isEmpty()) {
+            log.info("Skipping Elasticsearch sync because search is disabled");
+            return;
+        }
+
         log.info("Syncing all products to Elasticsearch");
 
         List<Product> products = productRepository.findAll();
         List<ProductDocument> documents = productDocumentMapper.toDocumentList(products);
-        productSearchRepository.saveAll(documents);
+        productSearchRepository.get().saveAll(documents);
 
         log.info("Synced {} products to Elasticsearch", products.size());
     }
 
     private void syncToElasticsearch(Product product) {
+        if (productSearchRepository.isEmpty()) {
+            return;
+        }
+
         try {
             ProductDocument document = productDocumentMapper.toDocument(product);
-            productSearchRepository.save(document);
+            productSearchRepository.get().save(document);
             log.debug("Product synced to Elasticsearch: {}", product.getId());
         } catch (Exception e) {
             log.error("Failed to sync product to Elasticsearch: {}", product.getId(), e);
