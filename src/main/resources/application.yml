@@ -4,6 +4,9 @@ server:
     context-path: /
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   application:
     name: product-service
 
