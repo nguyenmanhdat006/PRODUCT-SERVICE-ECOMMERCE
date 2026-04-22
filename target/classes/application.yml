@@ -48,6 +48,10 @@ spring:
     uris: ${ELASTICSEARCH_URIS:http://localhost:9200}
     connection-timeout: 5s
     socket-timeout: 30s
+  data:
+    elasticsearch:
+      repositories:
+        enabled: ${APP_SEARCH_ENABLED:false}
 
   # Security - OAuth2 Resource Server (Keycloak)
   security:

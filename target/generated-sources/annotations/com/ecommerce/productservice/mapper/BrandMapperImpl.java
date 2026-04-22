@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2026-04-22T23:08:15+0700",
-    comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.46.0.v20260407-0427, environment: Java 21.0.10 (Eclipse Adoptium)"
+    date = "2026-04-22T23:39:33+0700",
+    comments = "version: 1.5.5.Final, compiler: javac, environment: Java 21.0.10 (Red Hat, Inc.)"
 )
 @Component
 public class BrandMapperImpl implements BrandMapper {
@@ -24,14 +24,14 @@ public class BrandMapperImpl implements BrandMapper {
 
         Brand.BrandBuilder brand = Brand.builder();
 
-        brand.active( request.getActive() );
-        brand.description( request.getDescription() );
-        brand.logoUrl( request.getLogoUrl() );
-        brand.metaDescription( request.getMetaDescription() );
-        brand.metaTitle( request.getMetaTitle() );
         brand.name( request.getName() );
         brand.slug( request.getSlug() );
+        brand.description( request.getDescription() );
+        brand.logoUrl( request.getLogoUrl() );
         brand.websiteUrl( request.getWebsiteUrl() );
+        brand.active( request.getActive() );
+        brand.metaTitle( request.getMetaTitle() );
+        brand.metaDescription( request.getMetaDescription() );
 
         return brand.build();
     }
@@ -44,17 +44,17 @@ public class BrandMapperImpl implements BrandMapper {
 
         BrandResponse.BrandResponseBuilder brandResponse = BrandResponse.builder();
 
-        brandResponse.active( brand.getActive() );
-        brandResponse.createdAt( brand.getCreatedAt() );
-        brandResponse.description( brand.getDescription() );
         brandResponse.id( brand.getId() );
-        brandResponse.logoUrl( brand.getLogoUrl() );
-        brandResponse.metaDescription( brand.getMetaDescription() );
-        brandResponse.metaTitle( brand.getMetaTitle() );
         brandResponse.name( brand.getName() );
         brandResponse.slug( brand.getSlug() );
-        brandResponse.updatedAt( brand.getUpdatedAt() );
+        brandResponse.description( brand.getDescription() );
+        brandResponse.logoUrl( brand.getLogoUrl() );
         brandResponse.websiteUrl( brand.getWebsiteUrl() );
+        brandResponse.active( brand.getActive() );
+        brandResponse.metaTitle( brand.getMetaTitle() );
+        brandResponse.metaDescription( brand.getMetaDescription() );
+        brandResponse.createdAt( brand.getCreatedAt() );
+        brandResponse.updatedAt( brand.getUpdatedAt() );
 
         return brandResponse.build();
     }
@@ -79,8 +79,11 @@ public class BrandMapperImpl implements BrandMapper {
             return;
         }
 
-        if ( request.getActive() != null ) {
-            brand.setActive( request.getActive() );
+        if ( request.getName() != null ) {
+            brand.setName( request.getName() );
+        }
+        if ( request.getSlug() != null ) {
+            brand.setSlug( request.getSlug() );
         }
         if ( request.getDescription() != null ) {
             brand.setDescription( request.getDescription() );
@@ -88,20 +91,17 @@ public class BrandMapperImpl implements BrandMapper {
         if ( request.getLogoUrl() != null ) {
             brand.setLogoUrl( request.getLogoUrl() );
         }
-        if ( request.getMetaDescription() != null ) {
-            brand.setMetaDescription( request.getMetaDescription() );
+        if ( request.getWebsiteUrl() != null ) {
+            brand.setWebsiteUrl( request.getWebsiteUrl() );
+        }
+        if ( request.getActive() != null ) {
+            brand.setActive( request.getActive() );
         }
         if ( request.getMetaTitle() != null ) {
             brand.setMetaTitle( request.getMetaTitle() );
         }
-        if ( request.getName() != null ) {
-            brand.setName( request.getName() );
-        }
-        if ( request.getSlug() != null ) {
-            brand.setSlug( request.getSlug() );
-        }
-        if ( request.getWebsiteUrl() != null ) {
-            brand.setWebsiteUrl( request.getWebsiteUrl() );
+        if ( request.getMetaDescription() != null ) {
+            brand.setMetaDescription( request.getMetaDescription() );
         }
     }
 }
